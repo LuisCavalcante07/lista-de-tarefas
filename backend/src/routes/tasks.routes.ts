@@ -1,5 +1,5 @@
 import {Router} from "express"
-import { getTasks, createTask, updateTask } from "../actions/tasks.actions.js"
+import { getTasks, createTask, updateTask, deletTask } from "../actions/tasks.actions.js"
 
 const router = Router()
 
@@ -23,7 +23,17 @@ router.patch("/:id", async(req, res) => {
         res.json(update)
     } catch (error) {
         res.status(500).json({error: "Erro ao atualizar tarefa"})
-        console.log(error)
+    }
+})
+
+router.delete("/:id", async(req, res) => {
+    const {id} = req.params
+
+    try {
+        const deletedTask = await deletTask(id)
+        res.json(deletedTask)
+    } catch (error) {
+        res.status(500).json({error: "Erro ao atualizar tarefa"})
     }
 })
 

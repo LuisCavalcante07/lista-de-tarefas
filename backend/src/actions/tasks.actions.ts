@@ -17,7 +17,12 @@ export const createTask = async (title: string) => {
    })
 }
 
-export const updateTask = async (id: string, data:{task?: String, done?: boolean }) => {
-    const uptadetedTask = await prisma.task.update({where:{id}, data, })
+export const updateTask = async (id: string, data:{task?: string, done?: boolean }) => {
+    const uptadetedTask = await prisma.task.update({where:{id}, data })
     return uptadetedTask
+}
+
+export const deletTask = async(id: string) => {
+    const deletedTask = await prisma.task.delete({where: {id}})
+    return deletedTask
 }

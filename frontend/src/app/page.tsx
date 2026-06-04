@@ -6,8 +6,32 @@ import { Separator } from "@/components/ui/separator"
 import { Plus, List, X, ListChecks, Trash2 } from 'lucide-react'
 import EditTask from "@/components/EditTask";
 import ClearCompleted from "@/components/ClearCompleted";
+import { useEffect, useState } from "react";
+import {getAllTasks, deletTask} from "@/services/tasks"
+
+type Task = {
+  id: string;
+  task: string;
+  done: boolean;
+};
 
 const Home = () => {
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  useEffect(() => {
+      const fetchTasks = async () => {
+      const data = await getAllTasks()
+      console.log(data)
+      setTasks(data)
+    };
+    fetchTasks();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    await deletTask(id)
+    const data = await getAllTasks()
+    setTasks(data)
+  }
 
   return (
     <main className="w-full h-screen flex justify-center items-center bg-gray-500">
@@ -30,14 +54,22 @@ const Home = () => {
 
             <div className=" mt-4 border-b-1"> {/*Todos os cards*/}
 
-              <div className="h-12 flex justify-between items-center border-t-1"> {/*Um card*/}
-                <div className="w-2 h-full bg-green-300 "></div>
-                <p className=" flex-1 px-3 text-sm">Estudos</p>
-                <div className="flex gap-2 items-center">
-                  <EditTask/>
-                  <Trash2 size={18} className="cursor-pointer"/>
+              {tasks.map((task) => (
+                <div key={task.id} className="h-12 flex justify-between items-center border-t-1"> {/*Um card*/}
+
+                  <div className={`w-2 h-full ${task.done ? "bg-green-300" : "bg-red-300"}`}/>
+                  
+                  <p className=" flex-1 px-3 text-sm">{task.task}</p>
+
+                  <div className="flex gap-2 items-center">
+                    <EditTask/>
+                    <Trash2 size={18} className="cursor-pointer" onClick={() => handleDelete(task.id)}/>
+                  </div>  
+
                 </div>
-              </div>
+              ))}
+
+
 
             </div>
 
