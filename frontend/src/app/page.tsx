@@ -7,7 +7,7 @@ import { Plus, List, X, ListChecks, Trash2 } from 'lucide-react'
 import EditTask from "@/components/EditTask";
 import ClearCompleted from "@/components/ClearCompleted";
 import { useEffect, useState } from "react";
-import {getAllTasks, deletTask} from "@/services/tasks"
+import {getAllTasks, deletTask, addTask} from "@/services/tasks"
 
 type Task = {
   id: string;
@@ -17,6 +17,7 @@ type Task = {
 
 const Home = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [title, setTitle] = useState("")
 
   useEffect(() => {
       const fetchTasks = async () => {
@@ -33,13 +34,20 @@ const Home = () => {
     setTasks(data)
   }
 
+  const handleNewTask = async () => {
+    await addTask(title)
+
+    const data = await getAllTasks()
+    setTasks(data)
+  }
+
   return (
     <main className="w-full h-screen flex justify-center items-center bg-gray-500">
       <Card className="flex w-2xl p-3">
 
           <CardHeader className="flex gap-2">
-            <Input placeholder="Adicionar tarefa"/>
-            <Button className="cursor-pointer text-md"> <Plus/> Adicionar</Button>
+            <Input placeholder="Adicionar tarefa" value={title} onChange={(e)=> setTitle(e.target.value)}/>
+            <Button className="cursor-pointer text-md" onClick={handleNewTask}> <Plus/> Adicionar</Button>
           </CardHeader>
           
           <CardContent>

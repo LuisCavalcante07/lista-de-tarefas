@@ -15,6 +15,8 @@ export const createTask = async (title: string) => {
         done: false,
     }
    })
+
+   return task
 }
 
 export const updateTask = async (id: string, data:{task?: string, done?: boolean }) => {
