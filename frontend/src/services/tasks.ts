@@ -24,3 +24,27 @@ export const addTask = async (title : string) => {
 
     return response.json()
 }
+
+export const updateTaskName = async (id: string,  title: string) => {
+    const response = await fetch(`${API_URL}/tasks/${id}`, {
+        method: "PATCH", 
+        headers: {
+            "Content-Type": "application/json", 
+        },
+        body: JSON.stringify({task: title})
+    })
+
+    return response.json()
+}
+
+export const toggleTaskDone = async (id: string, done: boolean) => {
+     const response = await fetch(`${API_URL}/tasks/${id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-type" : "application/json"
+        },
+        body: JSON.stringify({done})
+     })
+
+     return response
+}

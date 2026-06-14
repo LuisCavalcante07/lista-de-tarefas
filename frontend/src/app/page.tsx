@@ -7,7 +7,7 @@ import { Plus, List, X, ListChecks, Trash2 } from 'lucide-react'
 import EditTask from "@/components/EditTask";
 import ClearCompleted from "@/components/ClearCompleted";
 import { useEffect, useState } from "react";
-import {getAllTasks, deletTask, addTask} from "@/services/tasks"
+import {getAllTasks, deletTask, addTask, updateTaskName, toggleTaskDone} from "@/services/tasks"
 
 type Task = {
   id: string;
@@ -41,6 +41,30 @@ const Home = () => {
     setTasks(data)
   }
 
+  const handleNewName = async (id: string, title: string) => {
+    await updateTaskName(id, title)
+
+    setTasks(prev =>
+      prev.map(task =>
+        task.id === id
+          ? { ...task, task: title }
+          : task
+      )
+    )
+  }
+
+  const handleDoneState = async (id: string, done: boolean) => {
+    await toggleTaskDone(id, done)
+
+    setTasks(prev =>
+      prev.map(task =>
+      task.id === id
+       ? { ...task, done }
+       : task
+      )
+    )
+  }
+
   return (
     <main className="w-full h-screen flex justify-center items-center bg-gray-500">
       <Card className="flex w-2xl p-3">
@@ -63,14 +87,14 @@ const Home = () => {
             <div className=" mt-4 border-b-1"> {/*Todos os cards*/}
 
               {tasks.map((task) => (
-                <div key={task.id} className="h-12 flex justify-between items-center border-t-1"> {/*Um card*/}
+                <div key={task.id} className="h-12 flex justify-between items-center border-t-1 cursor-pointer" onClick={() => handleDoneState(task.id, !task.done)}> {/*Um card*/}
 
                   <div className={`w-2 h-full ${task.done ? "bg-green-300" : "bg-red-300"}`}/>
                   
                   <p className=" flex-1 px-3 text-sm">{task.task}</p>
 
                   <div className="flex gap-2 items-center">
-                    <EditTask/>
+                    <EditTask id={task.id} currentTitle={task.task} onEdit={handleNewName}/>
                     <Trash2 size={18} className="cursor-pointer" onClick={() => handleDelete(task.id)}/>
                   </div>  
 

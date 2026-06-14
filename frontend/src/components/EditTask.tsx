@@ -2,10 +2,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Pen } from 'lucide-react'
+import { useState } from "react"
 
-const EditTask = () => {
+type EditTaskProps = {
+  id: string
+  currentTitle: string
+  onEdit: (id: string, title: string) => Promise<void>
+}
+
+const EditTask = ({id, currentTitle, onEdit}: EditTaskProps) => {
+  const [title, SetTitle] = useState(currentTitle)
+  const [open, setOpen] = useState(false)
+
  return(
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
      <DialogTrigger asChild> 
        <Pen size={18} className="cursor-pointer"/>
      </DialogTrigger>
@@ -15,8 +25,8 @@ const EditTask = () => {
        </DialogHeader>
        
        <div className="flex gap-2">
-         <Input placeholder="Editar Tarefa"/>
-         <Button className="cursor-pointer">Editar</Button>
+         <Input placeholder="Editar Tarefa" value={title} onChange={(e) => SetTitle(e.target.value)}/>
+         <Button className="cursor-pointer" onClick={async () => { await onEdit(id, title); setOpen(false)}}>Editar</Button>
        </div>
      
      </DialogContent>
