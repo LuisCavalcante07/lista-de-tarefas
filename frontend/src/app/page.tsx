@@ -18,6 +18,7 @@ type Task = {
 const Home = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [title, setTitle] = useState("")
+  const [filter, setFilter] = useState<"all" | "done" | "pending">("all")
 
   useEffect(() => {
       const fetchTasks = async () => {
@@ -65,6 +66,12 @@ const Home = () => {
     )
   }
 
+  const filteredTask = tasks.filter(task => {
+    if (filter === "done") return task.done
+    if (filter === "pending") return !task.done
+    return true
+  })
+
   return (
     <main className="w-full h-screen flex justify-center items-center bg-gray-500">
       <Card className="flex w-2xl p-3">
@@ -79,14 +86,16 @@ const Home = () => {
             <Separator className="mb-5"/>
 
             <div className="flex gap-2">
-              <Button className="cursor-pointer" variant={"default"}><List/> Todos</Button>
-              <Button className="cursor-pointer" variant={"outline"}><X/> Não Feitas</Button>
-              <Button className="cursor-pointer" variant={"outline"}><ListChecks /> Feitas</Button>
+              <Button className="cursor-pointer" variant={filter === "all" ? "default" : "outline"} onClick={() => setFilter("all")}><List/> Todos</Button>
+
+              <Button className="cursor-pointer" variant={filter === "pending" ? "default" : "outline"} onClick={() => setFilter("pending")}><X/> Não Feitas</Button>
+
+              <Button className="cursor-pointer" variant={filter === "done" ? "default" : "outline"} onClick={() => setFilter("done")}><ListChecks /> Feitas</Button>
             </div>
 
             <div className=" mt-4 border-b-1"> {/*Todos os cards*/}
 
-              {tasks.map((task) => (
+              {filteredTask.map((task) => (
                 <div key={task.id} className="h-12 flex justify-between items-center border-t-1 cursor-pointer" onClick={() => handleDoneState(task.id, !task.done)}> {/*Um card*/}
 
                   <div className={`w-2 h-full ${task.done ? "bg-green-300" : "bg-red-300"}`}/>
@@ -100,8 +109,6 @@ const Home = () => {
 
                 </div>
               ))}
-
-
 
             </div>
 
