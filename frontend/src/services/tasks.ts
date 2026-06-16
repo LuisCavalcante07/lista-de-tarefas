@@ -48,3 +48,9 @@ export const toggleTaskDone = async (id: string, done: boolean) => {
 
      return response
 }
+
+export const clearCompleted = async () => {
+    await fetch(`${API_URL}/tasks/completed`, {
+        method: "DELETE"
+    })
+}

@@ -7,7 +7,8 @@ import { Plus, List, X, ListChecks, Trash2 } from 'lucide-react'
 import EditTask from "@/components/EditTask";
 import ClearCompleted from "@/components/ClearCompleted";
 import { useEffect, useState } from "react";
-import {getAllTasks, deletTask, addTask, updateTaskName, toggleTaskDone} from "@/services/tasks"
+import {getAllTasks, deletTask, addTask, updateTaskName, toggleTaskDone, clearCompleted} from "@/services/tasks"
+import { toast } from 'sonner'
 
 type Task = {
   id: string;
@@ -33,6 +34,8 @@ const Home = () => {
     await deletTask(id)
     const data = await getAllTasks()
     setTasks(data)
+
+    toast.success('Tarefa deletada com sucesso')
   }
 
   const handleNewTask = async () => {
@@ -40,6 +43,8 @@ const Home = () => {
 
     const data = await getAllTasks()
     setTasks(data)
+
+    setTitle("")
   }
 
   const handleNewName = async (id: string, title: string) => {
@@ -52,6 +57,8 @@ const Home = () => {
           : task
       )
     )
+
+    toast.success('Edição realizada')
   }
 
   const handleDoneState = async (id: string, done: boolean) => {
@@ -66,11 +73,24 @@ const Home = () => {
     )
   }
 
+   const handleClearCompleted = async () => {
+    await clearCompleted()
+
+    setTasks(prev => prev.filter(task => !task.done))
+
+    toast.success('Tarefa Completas deletadas com sucesso')
+  }
+
   const filteredTask = tasks.filter(task => {
     if (filter === "done") return task.done
     if (filter === "pending") return !task.done
     return true
   })
+
+  const completedTasks = tasks.filter(task => task.done).length
+  const totalTasks = tasks.length
+
+  const progess = tasks.length === 0 ? 0 : (completedTasks/totalTasks) * 100
 
   return (
     <main className="w-full h-screen flex justify-center items-center bg-gray-500">
@@ -115,14 +135,14 @@ const Home = () => {
             <div className="flex w-full justify-between items-center mt-4">
              <div className="flex gap-2 items-center">
               <ListChecks/>
-              <p className="text-sm">Tarefas concluídas (3/3)</p>
+              <p className="text-sm">Tarefas concluídas ({`${completedTasks}/${totalTasks}`})</p>
              </div>
-              <ClearCompleted/>
+              <ClearCompleted onClear={handleClearCompleted}/>
            </div>
 
            
             <div className="h-4 w-full bg-gray-200 mt-4 mb-5 rounded-md">
-              <div className="h-full bg-emerald-500 rounded-md" style={{width: "50%"}}></div>
+              <div className="h-full bg-emerald-500 rounded-md" style={{width: `${progess}%`}}></div>
            </div>
 
           </CardContent>

@@ -1,8 +1,13 @@
+
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger }from "./ui/alert-dialog"
 import { Button } from "./ui/button";
 import { Trash2 } from 'lucide-react'
 
-const ClearCompleted = () => {
+type ClearCompletedProps = {
+  onClear: () => Promise<void>
+}
+
+const ClearCompleted = ({onClear}:ClearCompletedProps) => {
     return(
      <AlertDialog>
          <AlertDialogTrigger asChild>
@@ -13,7 +18,7 @@ const ClearCompleted = () => {
              <AlertDialogTitle>Tem certeza que deseja excluir?</AlertDialogTitle>
            </AlertDialogHeader> 
            <AlertDialogFooter>
-             <AlertDialogAction>Sim</AlertDialogAction>
+             <AlertDialogAction onClick={onClear}>Sim</AlertDialogAction>
              <AlertDialogCancel>Nao</AlertDialogCancel>
            </AlertDialogFooter> 
           </AlertDialogContent>

@@ -28,3 +28,9 @@ export const deletTask = async(id: string) => {
     const deletedTask = await prisma.task.delete({where: {id}})
     return deletedTask
 }
+
+export const clearDoneTask = async () => {
+    const deletedTask = await prisma.task.deleteMany({where: {done: true}})
+
+    return deletedTask
+}
